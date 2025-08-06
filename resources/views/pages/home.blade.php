@@ -29,7 +29,7 @@
                 <!-- Image Right -->
                 <div class="flex justify-center lg:justify-end rounded-2xl">
                     <div class="relative max-w-2xl w-full">
-                        <img src="assets/images/hero-section-background.jpeg" alt="iPhone Features" class="w-full h-auto">
+                        <img src="{{ asset('images/hero-section-background.jpeg') }}" alt="iPhone Features" class="w-full h-auto rounded-2xl">
                     </div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                 <div class="max-w-2xl">
                     <h2 class="text-4xl font-bold text-gray-900 mb-4">Daftar iPhone Tersedia</h2>
                     <p class="text-xl text-gray-600">
-                        Pilih iPhone impian Anda dari koleksi terlengkap kami. Semua device dalam kondisi prima dan 
+                        Pilih iPhone yang Anda inginkan dari daftar iphone kami. Semua iPhone dalam kondisi Baik dan 
                         siap pakai.
                     </p>
                 </div>
@@ -53,12 +53,12 @@
             </div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                <!-- iPhone 15 Pro Max -->
+                @forelse($iphones as $iphone)
                 <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-gray-800 transition-all duration-500">
                     <div class="relative">
                         <div class="p-6">
                             <div class="aspect-square rounded-xl overflow-hidden bg-gray-50">
-                                <img src="assets/images/iphone-16-pro.webp" alt="iPhone 15 Pro Max" class="w-full h-full object-cover">
+                                <img src="{{ $iphone->gambar ?: asset('img/default-iphone.png') }}" alt="{{ $iphone->tipe_iphone }}" class="w-full h-full object-cover">
                             </div>
                         </div>
                         <div class="absolute top-6 right-6 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -66,142 +66,28 @@
                         </div>
                     </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">iPhone 15 Pro Max</h3>
-                        <p class="text-gray-600 mb-4">256GB • Natural Titanium</p>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $iphone->tipe_iphone }}</h3>
+                        <p class="text-gray-600 mb-4">{{ $iphone->warna }}</p>
                         <div class="mb-6">
-                            <span class="text-2xl font-bold text-gray-900">Rp 50.000</span>
+                            <span class="text-2xl font-bold text-gray-900">Rp {{ number_format($iphone->harga_per_hari) }}</span>
                             <span class="text-gray-500 text-lg">/hari</span>
                         </div>
-                        <button onclick="rentIphone('iPhone 15 Pro Max')" class="w-full bg-gray-800 text-white py-2 rounded-full font-semibold hover:bg-transparent hover:border-2 hover:border-gray-800 hover:text-gray-800 border-2 border-gray-800 transition-all duration-500">
-                            Sewa Sekarang
-                        </button>
+                        @if(Auth::guard('penyewa')->check())
+                            <a href="{{ route('detail-iphone', $iphone->id_iphone) }}"
+                                class="block w-full bg-gray-800 text-white py-2 rounded-full font-semibold hover:bg-transparent hover:border-2 hover:border-gray-800 hover:text-gray-800 border-2 border-gray-800 transition-all duration-500 text-center">
+                                Sewa Sekarang
+                            </a>
+                        @else
+                            <button type="button" onclick="showLoginAlert()"
+                                class="block w-full bg-gray-800 text-white py-2 rounded-full font-semibold hover:bg-transparent hover:border-2 hover:border-gray-800 hover:text-gray-800 border-2 border-gray-800 transition-all duration-500 text-center">
+                                Sewa Sekarang
+                            </button>
+                        @endif
                     </div>
                 </div>
-
-                <!-- iPhone 15 Pro -->
-                <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-gray-800 transition-all duration-500">
-                    <div class="relative">
-                        <div class="p-6">
-                            <div class="aspect-square rounded-xl overflow-hidden bg-gray-50">
-                                <img src="assets/images/iphone-16-pro.webp" alt="iPhone 15 Pro" class="w-full h-full object-cover">
-                            </div>
-                        </div>
-                        <div class="absolute top-6 right-6 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            Tersedia
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">iPhone 15 Pro</h3>
-                        <p class="text-gray-600 mb-4">128GB • Blue Titanium</p>
-                        <div class="mb-6">
-                            <span class="text-2xl font-bold text-gray-900">Rp 45.000</span>
-                            <span class="text-gray-500 text-lg">/hari</span>
-                        </div>
-                        <button onclick="rentIphone('iPhone 15 Pro')" class="w-full bg-gray-800 text-white py-2 rounded-full font-semibold hover:bg-transparent hover:border-2 hover:border-gray-800 hover:text-gray-800 border-2 border-gray-800 transition-all duration-500">
-                            Sewa Sekarang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- iPhone 15 -->
-                <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-gray-800 transition-all duration-500">
-                    <div class="relative">
-                        <div class="p-6">
-                            <div class="aspect-square rounded-xl overflow-hidden bg-gray-50">
-                                <img src="assets/images/iphone-16-pro.webp" alt="iPhone 15" class="w-full h-full object-cover">
-                            </div>
-                        </div>
-                        <div class="absolute top-6 right-6 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            Tersedia
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">iPhone 15</h3>
-                        <p class="text-gray-600 mb-4">128GB • Pink</p>
-                        <div class="mb-6">
-                            <span class="text-2xl font-bold text-gray-900">Rp 35.000</span>
-                            <span class="text-gray-500 text-lg">/hari</span>
-                        </div>
-                        <button onclick="rentIphone('iPhone 15')" class="w-full bg-gray-800 text-white py-2 rounded-full font-semibold hover:bg-transparent hover:border-2 hover:border-gray-800 hover:text-gray-800 border-2 border-gray-800 transition-all duration-500">
-                            Sewa Sekarang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- iPhone 14 Pro Max -->
-                <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-gray-800 transition-all duration-500 opacity-75">
-                    <div class="relative">
-                        <div class="p-6">
-                            <div class="aspect-square rounded-xl overflow-hidden bg-gray-50">
-                                <img src="assets/images/iphone-16-pro.webp" alt="iPhone 14 Pro Max" class="w-full h-full object-cover grayscale">
-                            </div>
-                        </div>
-                        <div class="absolute top-6 right-6 bg-gray-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            Tidak Tersedia
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">iPhone 14 Pro Max</h3>
-                        <p class="text-gray-600 mb-4">256GB • Space Black</p>
-                        <div class="mb-6">
-                            <span class="text-2xl font-bold text-gray-900">Rp 42.000</span>
-                            <span class="text-gray-500 text-lg">/hari</span>
-                        </div>
-                        <button class="w-full bg-gray-400 text-white py-2 rounded-full font-semibold cursor-not-allowed" disabled>
-                            Tidak Tersedia
-                        </button>
-                    </div>
-                </div>
-
-                <!-- iPhone 14 -->
-                <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-gray-800 transition-all duration-500">
-                    <div class="relative">
-                        <div class="p-6">
-                            <div class="aspect-square rounded-xl overflow-hidden bg-gray-50">
-                                <img src="assets/images/iphone-16-pro.webp" alt="iPhone 14" class="w-full h-full object-cover">
-                            </div>
-                        </div>
-                        <div class="absolute top-6 right-6 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            Tersedia
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">iPhone 14</h3>
-                        <p class="text-gray-600 mb-4">128GB • Blue</p>
-                        <div class="mb-6">
-                            <span class="text-2xl font-bold text-gray-900">Rp 30.000</span>
-                            <span class="text-gray-500 text-lg">/hari</span>
-                        </div>
-                        <button onclick="rentIphone('iPhone 14')" class="w-full bg-gray-800 text-white py-2 rounded-full font-semibold hover:bg-transparent hover:border-2 hover:border-gray-800 hover:text-gray-800 border-2 border-gray-800 transition-all duration-500">
-                            Sewa Sekarang
-                        </button>
-                    </div>
-                </div>
-
-                <!-- iPhone 13 -->
-                <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:border-gray-800 transition-all duration-500">
-                    <div class="relative">
-                        <div class="p-6">
-                            <div class="aspect-square rounded-xl overflow-hidden bg-gray-50">
-                                <img src="assets/images/iphone-16-pro.webp" alt="iPhone 13" class="w-full h-full object-cover">
-                            </div>
-                        </div>
-                        <div class="absolute top-6 right-6 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            Tersedia
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">iPhone 13</h3>
-                        <p class="text-gray-600 mb-4">128GB • Midnight</p>
-                        <div class="mb-6">
-                            <span class="text-2xl font-bold text-gray-900">Rp 25.000</span>
-                            <span class="text-gray-500 text-lg">/hari</span>
-                        </div>
-                        <button onclick="rentIphone('iPhone 13')" class="w-full bg-gray-800 text-white py-2 rounded-full font-semibold hover:bg-transparent hover:border-2 hover:border-gray-800 hover:text-gray-800 border-2 border-gray-800 transition-all duration-500">
-                            Sewa Sekarang
-                        </button>
-                    </div>
-                </div>
+                @empty
+                <div class="text-center py-8 col-span-4 text-gray-400">Belum ada iPhone tersedia.</div>
+                @endforelse
             </div>
         </div>
     </section>
@@ -222,7 +108,7 @@
                         1
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-3">Pilih iPhone</h3>
-                    <p class="text-gray-600">Browse dan pilih iPhone yang ingin Anda sewa dari katalog kami</p>
+                    <p class="text-gray-600">Pilih iPhone yang ingin Anda sewa dari Daftar iPhone yang tersedia</p>
                 </div>
             
                 <div class="text-center">
@@ -238,7 +124,7 @@
                         3
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-3">Ambil iPhone</h3>
-                    <p class="text-gray-600">Ambil iPhone di lokasi yang telah ditentukan atau delivery</p>
+                    <p class="text-gray-600">Ambil iPhone di lokasi toko iRentalKita pada tanggal yang telah disepakati</p>
                 </div>
             
                 <div class="text-center">
@@ -268,7 +154,7 @@
                         <i class="fas fa-shield-alt text-3xl text-blue-600"></i>
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-3">Aman & Terpercaya</h3>
-                    <p class="text-gray-600">Semua iPhone telah diverifikasi, diasuransikan, dan dalam kondisi prima</p>
+                    <p class="text-gray-600">Semua iPhone telah diverifikasi, diasuransikan, dan dalam kondisi Baik</p>
                 </div>
             
                 <div class="text-center p-8 bg-white rounded-2xl shadow-sm">
@@ -276,7 +162,7 @@
                         <i class="fas fa-clock text-3xl text-green-600"></i>
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-3">Proses Mudah</h3>
-                    <p class="text-gray-600">Pemesanan online yang mudah dengan proses persetujuan dalam hitungan menit</p>
+                    <p class="text-gray-600">Pemesanan online yang mudah dengan proses booking dalam hitungan menit</p>
                 </div>
             
                 <div class="text-center p-8 bg-white rounded-2xl shadow-sm">
@@ -284,24 +170,16 @@
                         <i class="fas fa-money-bill-wave text-3xl text-purple-600"></i>
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-3">Harga Terjangkau</h3>
-                    <p class="text-gray-600">Nikmati iPhone premium dengan harga rental yang sangat kompetitif</p>
+                    <p class="text-gray-600">Nikmati iPhone terbaru dengan harga rental yang sangat kompetitif</p>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- Demo Toggle Button (untuk testing) -->
-    <div class="fixed bottom-4 right-4 z-50">
-        <button onclick="toggleLoginState()" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition-all duration-300">
-            <i class="fas fa-user-circle mr-2"></i>
-            Toggle Login State
-        </button>
-    </div>
 @endsection
 
 
 @push('scripts')
-<!-- <script src="/js/global.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
  <script>
     // tombol hero section
     function scrollToIphoneSection() {
@@ -312,6 +190,21 @@
     });
 }
  </script>
+
+<script>
+    function showLoginAlert() {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Login Diperlukan',
+            text: 'Anda Harus Login Terlebih Dahulu, Sebelum Menyewa iPhone',
+            confirmButtonText: 'Oke'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "{{ route('login-penyewa') }}";
+            }
+        });
+    }
+</script>
 @endpush
 
 

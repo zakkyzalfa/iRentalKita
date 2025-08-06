@@ -1,102 +1,83 @@
 @extends('layouts.admin')
 
-@section('title', 'Beranda')
+@section('title', 'Proses Pengembalian')
 
 @section('content')
-    <!-- Main Content -->
-    <section class="py-8 bg-gray-50 min-h-screen">
-        <!-- Page Header -->
-        <div class="max-w-4xl mx-auto px-8 mb-8">
-            <div class="text-center">
-                <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-undo text-white text-3xl"></i>
-                </div>
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Proses Pengembalian iPhone</h1>
-                <p class="text-lg text-gray-600">Periksa kondisi iPhone dan proses pengembalian</p>
+<section class="py-8 bg-gray-50 min-h-screen">
+    <div class="max-w-4xl mx-auto px-8 mb-8">
+        <div class="text-center">
+            <div class="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-undo text-white text-3xl"></i>
             </div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Pemeriksaan iPhone</h1>
+            <p class="text-lg text-gray-800">Periksa kondisi iPhone dan proses pengembalian</p>
         </div>
-
-        <!-- Main Content -->
-        <div class="max-w-6xl mx-auto px-8">
+    </div>
+    <div class="max-w-6xl mx-auto px-8">
+        <form action="{{ route('admin.proses-pengembalian.proses', $pemesanan->id_pemesanan) }}" method="POST" id="formPemeriksaan">
+            @csrf
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-                
-                <!-- Customer & Rental Info - 40% (2 columns) -->
+                <!-- Kolom kiri: Info penyewa & rental -->
                 <div class="lg:col-span-2">
                     <div class="bg-white rounded-2xl shadow-sm border-2 border-gray-200 p-6 sticky top-24">
                         <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
                             <i class="fas fa-user mr-3 text-gray-600"></i>
                             Data Penyewa & Rental
                         </h2>
-
-                        <!-- Customer Details -->
                         <div class="space-y-4 mb-6">
                             <div class="text-center mb-4">
                                 <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                                    <span class="text-xl font-bold text-white">J</span>
+                                    <span class="text-xl font-bold text-white">
+                                        {{ strtoupper(substr($pemesanan->penyewa->nama,0,1)) }}
+                                    </span>
                                 </div>
-                                <h3 class="text-lg font-semibold text-gray-900">John Doe</h3>
+                                <h3 class="text-lg font-semibold text-gray-900">{{ $pemesanan->penyewa->nama }}</h3>
                             </div>
-
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-600">Email:</span>
-                                <span class="font-medium text-gray-900">john.doe@email.com</span>
+                                <span class="font-medium text-gray-900">{{ $pemesanan->penyewa->email }}</span>
                             </div>
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-600">Telepon:</span>
-                                <span class="font-medium text-gray-900">+62 812-3456-7890</span>
+                                <span class="font-medium text-gray-900">{{ $pemesanan->penyewa->no_hp ?? '-' }}</span>
                             </div>
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-600">No. KTP:</span>
-                                <span class="font-medium text-gray-900">3201234567890123</span>
+                                <span class="font-medium text-gray-900">{{ $pemesanan->penyewa->no_ktp ?? '-' }}</span>
                             </div>
                         </div>
-
                         <div class="border-t border-gray-200 pt-4 space-y-4">
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-600">Tipe iPhone:</span>
-                                <span class="font-medium text-gray-900">iPhone 15 Pro Max 256GB</span>
+                                <span class="font-medium text-gray-900">{{ $pemesanan->iphone->tipe_iphone ?? '-' }}</span>
                             </div>
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-600">IMEI:</span>
-                                <span class="font-medium text-gray-900">123456789012345</span>
+                                <span class="font-medium text-gray-900">{{ $pemesanan->iphone->imei ?? '-' }}</span>
                             </div>
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-600">Tanggal Mulai:</span>
-                                <span class="font-medium text-gray-900">20 Jan 2025</span>
+                                <span class="font-medium text-gray-900">
+                                    {{ \Carbon\Carbon::parse($pemesanan->tanggal_sewa)->translatedFormat('d M Y') }}
+                                </span>
                             </div>
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-600">Tanggal Kembali:</span>
-                                <span class="font-medium text-gray-900">25 Jan 2025</span>
-                            </div>
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">Status:</span>
-                                <span class="font-medium text-green-600" id="statusKembali">Tepat Waktu</span>
+                                <span class="font-medium text-gray-900">
+                                    {{ \Carbon\Carbon::parse($pemesanan->tanggal_kembali)->translatedFormat('d M Y') }}
+                                </span>
                             </div>
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-600">Total Sewa:</span>
-                                <span class="font-medium text-gray-900">Rp 250.000</span>
-                            </div>
-                        </div>
-
-                        <!-- Penalty Section (Hidden by default) -->
-                        <div id="penaltySection" class="border-t border-red-200 pt-4 mt-4 hidden">
-                            <h4 class="font-semibold text-red-800 mb-2">Denda</h4>
-                            <div id="penaltyList" class="space-y-2 text-sm">
-                                <!-- Penalty items will be added here -->
-                            </div>
-                            <div class="flex justify-between text-sm font-semibold text-red-600 mt-2 pt-2 border-t border-red-200">
-                                <span>Total Denda:</span>
-                                <span id="totalPenalty">Rp 0</span>
+                                <span class="font-medium text-gray-900">Rp {{ number_format($durasi * $pemesanan->iphone->harga_per_hari,0,',','.') }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Process Steps - 60% (3 columns) -->
+                <!-- Kolom kanan: Form pemeriksaan -->
                 <div class="lg:col-span-3">
                     <div class="space-y-6">
-                        
-                        <!-- Step 1: Pemeriksaan Kondisi iPhone -->
+                        <!-- Step 1: Pemeriksaan Kondisi -->
                         <div class="bg-white rounded-2xl shadow-sm border-2 border-gray-200 p-6">
                             <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
                                 <div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-semibold mr-3">
@@ -104,146 +85,86 @@
                                 </div>
                                 Pemeriksaan Kondisi iPhone
                             </h2>
-                            
                             <div class="space-y-4">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div class="space-y-3">
-                                        <div class="flex items-center justify-between">
-                                            <label class="text-gray-900 font-medium">Layar</label>
-                                            <select class="condition-select border border-gray-300 rounded px-2 py-1 text-sm" data-item="layar">
-                                                <option value="baik">Baik</option>
-                                                <option value="rusak">Rusak</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div class="flex items-center justify-between">
-                                            <label class="text-gray-900 font-medium">Body/Casing</label>
-                                            <select class="condition-select border border-gray-300 rounded px-2 py-1 text-sm" data-item="body">
-                                                <option value="baik">Baik</option>
-                                                <option value="rusak">Rusak</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div class="flex items-center justify-between">
-                                            <label class="text-gray-900 font-medium">Kamera</label>
-                                            <select class="condition-select border border-gray-300 rounded px-2 py-1 text-sm" data-item="kamera">
-                                                <option value="baik">Baik</option>
-                                                <option value="rusak">Rusak</option>
-                                            </select>
-                                        </div>
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-gray-900 font-medium">Layar</label>
+                                        <select name="kondisi_kembali[layar]" class="border border-gray-300 rounded px-2 py-1 text-sm kondisi" data-komponen="layar" required>
+                                            <option value="baik" selected>Baik</option>
+                                            <option value="rusak">Rusak</option>
+                                        </select>
                                     </div>
-                                    
-                                    <div class="space-y-3">
-                                        <div class="flex items-center justify-between">
-                                            <label class="text-gray-900 font-medium">Charger</label>
-                                            <select class="condition-select border border-gray-300 rounded px-2 py-1 text-sm" data-item="charger">
-                                                <option value="ada">Ada</option>
-                                                <option value="hilang">Hilang</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div class="flex items-center justify-between">
-                                            <label class="text-gray-900 font-medium">Kemasan</label>
-                                            <select class="condition-select border border-gray-300 rounded px-2 py-1 text-sm" data-item="kemasan">
-                                                <option value="baik">Baik</option>
-                                                <option value="rusak">Rusak</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div class="flex items-center justify-between">
-                                            <label class="text-gray-900 font-medium">Fungsi Umum</label>
-                                            <select class="condition-select border border-gray-300 rounded px-2 py-1 text-sm" data-item="fungsi">
-                                                <option value="normal">Normal</option>
-                                                <option value="bermasalah">Bermasalah</option>
-                                            </select>
-                                        </div>
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-gray-900 font-medium">Kamera</label>
+                                        <select name="kondisi_kembali[kamera]" class="border border-gray-300 rounded px-2 py-1 text-sm kondisi" data-komponen="kamera" required>
+                                            <option value="baik" selected>Baik</option>
+                                            <option value="rusak">Rusak</option>
+                                        </select>
                                     </div>
-                                </div>
-                                
-                                <div class="mt-4">
-                                    <label for="catatanPemeriksaan" class="block text-sm font-medium text-gray-700 mb-2">
-                                        Catatan Pemeriksaan
-                                    </label>
-                                    <textarea 
-                                        id="catatanPemeriksaan" 
-                                        rows="3" 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                                        placeholder="Catat kondisi khusus atau kerusakan yang ditemukan..."
-                                    ></textarea>
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-gray-900 font-medium">Body</label>
+                                        <select name="kondisi_kembali[body]" class="border border-gray-300 rounded px-2 py-1 text-sm kondisi" data-komponen="body" required>
+                                            <option value="baik" selected>Baik</option>
+                                            <option value="rusak">Rusak</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-gray-900 font-medium">Box iPhone</label>
+                                        <select name="kondisi_kembali[kemasan]" class="border border-gray-300 rounded px-2 py-1 text-sm kondisi" data-komponen="kemasan" required>
+                                            <option value="ada" selected>Ada</option>
+                                            <option value="hilang">Hilang</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-gray-900 font-medium">Charger</label>
+                                        <select name="kondisi_kembali[charger]" class="border border-gray-300 rounded px-2 py-1 text-sm kondisi" data-komponen="charger" required>
+                                            <option value="ada" selected>Ada</option>
+                                            <option value="hilang">Hilang</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Step 2: Perhitungan Denda -->
+                        <!-- Step 2: Keterlambatan -->
                         <div class="bg-white rounded-2xl shadow-sm border-2 border-gray-200 p-6">
                             <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
                                 <div class="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center text-sm font-semibold mr-3">
                                     2
                                 </div>
-                                Perhitungan Denda (Jika Ada)
+                                Keterlambatan Pengembalian
                             </h2>
-                            
-                            <div id="dendaCalculation" class="space-y-4">
-                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                                    <p class="text-sm text-gray-600 text-center">
-                                        Denda akan dihitung otomatis berdasarkan kondisi iPhone dan keterlambatan
-                                    </p>
-                                </div>
+                            <div class="flex items-center gap-4">
+                                <label for="keterlambatan_hari" class="block text-gray-900 font-medium">Keterlambatan (hari):</label>
+                                <input type="number" min="0" name="keterlambatan_hari" id="keterlambatan_hari" value="{{ $keterlambatan }}" class="border border-gray-300 rounded px-2 py-1 text-sm w-24" required>
+                                <span class="text-gray-600 text-sm">(Rp 600.000 / hari)</span>
                             </div>
                         </div>
-
-                        <!-- Step 3: Pengembalian KTP -->
+                        <!-- Step 3: Perhitungan Denda Otomatis -->
                         <div class="bg-white rounded-2xl shadow-sm border-2 border-gray-200 p-6">
                             <h2 class="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-                                <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-semibold mr-3">
+                                <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-semibold mr-3">
                                     3
                                 </div>
-                                Pengembalian KTP & Finalisasi
+                                Perhitungan Denda
                             </h2>
-                            
-                            <div class="space-y-4">
-                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                    <h4 class="font-semibold text-blue-800 mb-2 flex items-center">
-                                        <i class="fas fa-id-card mr-2"></i>
-                                        Status KTP Jaminan
-                                    </h4>
-                                    <p class="text-sm text-blue-700">
-                                        KTP penyewa saat ini ditahan sebagai jaminan. 
-                                        KTP akan dikembalikan setelah semua denda (jika ada) dibayar.
-                                    </p>
-                                </div>
-                                
-                                <div class="flex items-center space-x-3">
-                                    <input type="checkbox" id="dendaBayar" class="w-5 h-5 text-green-600 rounded focus:ring-green-500" disabled>
-                                    <label for="dendaBayar" class="text-gray-900 font-medium">Denda telah dibayar (jika ada)</label>
-                                </div>
-                                
-                                <div class="flex items-center space-x-3">
-                                    <input type="checkbox" id="ktpKembali" class="w-5 h-5 text-green-600 rounded focus:ring-green-500">
-                                    <label for="ktpKembali" class="text-gray-900 font-medium">KTP telah dikembalikan kepada penyewa</label>
-                                </div>
-                                
-                                <div class="flex items-center space-x-3">
-                                    <input type="checkbox" id="konfirmasiSelesai" class="w-5 h-5 text-green-600 rounded focus:ring-green-500">
-                                    <label for="konfirmasiSelesai" class="text-gray-900 font-medium">Penyewa mengkonfirmasi pengembalian selesai</label>
-                                </div>
+                            <div id="daftarDenda" class="mb-4 text-sm text-gray-800"></div>
+                            <div class="flex justify-between items-center text-lg mt-6">
+                                <span class="font-semibold text-gray-900">Total Denda:</span>
+                                <input type="text" name="denda" id="totalDenda" class="border-0 bg-transparent text-right font-bold text-red-600 w-40" readonly value="0">
                             </div>
                         </div>
-
-                        <!-- Action Buttons -->
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <button onclick="selesaikanPengembalian()" class="flex-1 bg-green-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-green-700 transition-all duration-300 flex items-center justify-center text-lg" id="selesaiBtn" disabled>
+                        <!-- Step 4: Aksi -->
+                        <div class="bg-white rounded-2xl shadow-sm border-2 border-gray-200 p-6 flex flex-col gap-4">
+                            <button type="button" id="btn-pemeriksaan" class="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-transparent hover:border-2 hover:border-green-600 hover:text-green-600 border-2 border-green-600 transition-all duration-300">
                                 <i class="fas fa-check mr-3"></i>
-                                Selesaikan Pengembalian
+                                Pemeriksaan Selesai
                             </button>
-                            
-                            <button onclick="batalkanProses()" class="flex-1 bg-red-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-red-700 transition-all duration-300 flex items-center justify-center text-lg">
+                            <button type="submit" id="submit-pemeriksaan" class="hidden"></button>
+                            <a href="{{ route('admin.dashboard-admin') }}" class="w-full bg-red-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-transparent hover:border-2 hover:border-red-600 hover:text-green-600 border-2 border-red-600 transition-all duration-300 flex items-center justify-center">
                                 <i class="fas fa-times mr-3"></i>
                                 Batalkan Proses
-                            </button>
+                            </a>
                         </div>
-
-                        <!-- Important Notes -->
                         <div class="bg-gray-100 border border-gray-300 rounded-2xl p-6">
                             <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                                 <i class="fas fa-info-circle mr-3"></i>
@@ -271,219 +192,83 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </form>
+    </div>
+</section>
 @endsection
 
-
 @push('scripts')
-<!-- <script src="/js/global.js"></script> -->
- <script>
-        // Penalty calculation
-        const penaltyRates = {
-            layar: 500000,      // Layar rusak
-            body: 200000,       // Body rusak
-            kamera: 300000,     // Kamera rusak
-            charger: 150000,    // Charger hilang
-            kemasan: 50000,     // Kemasan rusak
-            fungsi: 400000,     // Fungsi bermasalah
-            terlambat: 25000    // Per hari terlambat
-        };
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+const DENDA = {
+    layar:    { rusak: 750000 },
+    kamera:   { rusak: 500000 },
+    body:     { rusak: 400000 },
+    kemasan:  { hilang: 100000 },
+    charger:  { hilang: 500000 }
+};
+const DENDA_TERLAMBAT_PER_HARI = 600000;
 
-        function calculatePenalty() {
-            let totalPenalty = 0;
-            let penaltyItems = [];
-            
-            // Check each condition
-            const conditions = document.querySelectorAll('.condition-select');
-            conditions.forEach(select => {
-                const item = select.dataset.item;
-                const condition = select.value;
-                
-                if ((item === 'charger' && condition === 'hilang') ||
-                    (item !== 'charger' && condition === 'rusak') ||
-                    (item === 'fungsi' && condition === 'bermasalah')) {
-                    
-                    const penalty = penaltyRates[item];
-                    totalPenalty += penalty;
-                    
-                    let description = '';
-                    if (item === 'charger' && condition === 'hilang') {
-                        description = 'Charger hilang';
-                    } else if (item === 'fungsi' && condition === 'bermasalah') {
-                        description = 'Fungsi bermasalah';
-                    } else {
-                        description = `${item.charAt(0).toUpperCase() + item.slice(1)} rusak`;
-                    }
-                    
-                    penaltyItems.push({
-                        description: description,
-                        amount: penalty
-                    });
-                }
-            });
-            
-            // Check for late return (example: 1 day late)
-            const today = new Date();
-            const returnDate = new Date('2025-01-25');
-            const daysDiff = Math.ceil((today - returnDate) / (1000 * 60 * 60 * 24));
-            
-            if (daysDiff > 0) {
-                const latePenalty = daysDiff * penaltyRates.terlambat;
-                totalPenalty += latePenalty;
-                penaltyItems.push({
-                    description: `Terlambat ${daysDiff} hari`,
-                    amount: latePenalty
-                });
-                
-                // Update status
-                document.getElementById('statusKembali').textContent = `Terlambat ${daysDiff} hari`;
-                document.getElementById('statusKembali').className = 'font-medium text-red-600';
+function hitungDenda() {
+    let total = 0;
+    let dendaList = [];
+
+    // Komponen
+    document.querySelectorAll('.kondisi').forEach(function(sel){
+        const komponen = sel.dataset.komponen;
+        const val = sel.value;
+        if (DENDA[komponen] && DENDA[komponen][val]) {
+            total += DENDA[komponen][val];
+            let label = '';
+            switch(komponen) {
+                case 'layar': label = 'Layar Rusak'; break;
+                case 'kamera': label = 'Kamera Rusak'; break;
+                case 'body': label = 'Body Rusak'; break;
+                case 'kemasan': label = 'Box/Hilang'; break;
+                case 'charger': label = 'Charger Hilang'; break;
             }
-            
-            // Update UI
-            updatePenaltyDisplay(penaltyItems, totalPenalty);
-            updateDendaCalculation(penaltyItems, totalPenalty);
-            
-            // Enable/disable denda checkbox
-            const dendaBayarCheck = document.getElementById('dendaBayar');
-            if (totalPenalty > 0) {
-                dendaBayarCheck.disabled = false;
-                dendaBayarCheck.required = true;
-            } else {
-                dendaBayarCheck.disabled = true;
-                dendaBayarCheck.checked = true; // Auto-check if no penalty
-            }
-            
-            checkAllRequirements();
+            dendaList.push(`<li class="text-red-700">Denda ${label}: <b>Rp ${DENDA[komponen][val].toLocaleString('id-ID')}</b></li>`);
         }
+    });
 
-        function updatePenaltyDisplay(items, total) {
-            const penaltySection = document.getElementById('penaltySection');
-            const penaltyList = document.getElementById('penaltyList');
-            const totalPenalty = document.getElementById('totalPenalty');
-            
-            if (total > 0) {
-                penaltySection.classList.remove('hidden');
-                penaltyList.innerHTML = '';
-                
-                items.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'flex justify-between';
-                    div.innerHTML = `
-                        <span>${item.description}:</span>
-                        <span>Rp ${item.amount.toLocaleString('id-ID')}</span>
-                    `;
-                    penaltyList.appendChild(div);
-                });
-                
-                totalPenalty.textContent = `Rp ${total.toLocaleString('id-ID')}`;
-            } else {
-                penaltySection.classList.add('hidden');
+    // Keterlambatan
+    const keterlambatan = parseInt(document.getElementById('keterlambatan_hari').value) || 0;
+    if (keterlambatan > 0) {
+        let dendaTerlambat = keterlambatan * DENDA_TERLAMBAT_PER_HARI;
+        total += dendaTerlambat;
+        dendaList.push(`<li class="text-red-700">Denda Keterlambatan ${keterlambatan} hari: <b>Rp ${dendaTerlambat.toLocaleString('id-ID')}</b></li>`);
+    }
+
+    document.getElementById('totalDenda').value = total.toLocaleString('id-ID');
+    document.getElementById('daftarDenda').innerHTML = dendaList.length ? `<ul class="list-disc pl-5">${dendaList.join('')}</ul>` : '<span class="text-green-700">Tidak ada denda</span>';
+}
+
+// SweetAlert2 Pemeriksaan Selesai
+document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.kondisi').forEach(function(sel){
+        sel.addEventListener('change', hitungDenda);
+    });
+    document.getElementById('keterlambatan_hari').addEventListener('input', hitungDenda);
+    hitungDenda();
+
+    document.getElementById('btn-pemeriksaan').addEventListener('click', function(){
+        let totalDenda = parseInt(document.getElementById('totalDenda').value.replace(/\D/g, '')) || 0;
+        let msg = totalDenda > 0
+            ? "Penyewa dinyatakan denda, Apakah anda yakin?"
+            : "Penyewa tidak dinyatakan denda, Apakah anda yakin?";
+        Swal.fire({
+            title: 'Konfirmasi Pemeriksaan',
+            text: msg,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('submit-pemeriksaan').click();
             }
-        }
-
-        function updateDendaCalculation(items, total) {
-            const dendaCalculation = document.getElementById('dendaCalculation');
-            
-            if (total > 0) {
-                dendaCalculation.innerHTML = `
-                    <div class="space-y-3">
-                        ${items.map(item => `
-                            <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
-                                <span class="text-red-800 font-medium">${item.description}</span>
-                                <span class="text-red-600 font-semibold">Rp ${item.amount.toLocaleString('id-ID')}</span>
-                            </div>
-                        `).join('')}
-                        <div class="flex justify-between items-center p-4 bg-red-100 rounded-lg border-2 border-red-300">
-                            <span class="text-red-800 font-bold text-lg">Total Denda:</span>
-                            <span class="text-red-600 font-bold text-xl">Rp ${total.toLocaleString('id-ID')}</span>
-                        </div>
-                    </div>
-                `;
-            } else {
-                dendaCalculation.innerHTML = `
-                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                        <p class="text-green-800 font-medium text-center">
-                            <i class="fas fa-check-circle mr-2"></i>
-                            Tidak ada denda - iPhone dikembalikan dalam kondisi baik
-                        </p>
-                    </div>
-                `;
-            }
-        }
-
-        // Check if all requirements are met
-        function checkAllRequirements() {
-            const dendaBayar = document.getElementById('dendaBayar');
-            const ktpKembali = document.getElementById('ktpKembali');
-            const konfirmasiSelesai = document.getElementById('konfirmasiSelesai');
-            const selesaiBtn = document.getElementById('selesaiBtn');
-            
-            const allChecked = dendaBayar.checked && ktpKembali.checked && konfirmasiSelesai.checked;
-            
-            if (allChecked) {
-                selesaiBtn.disabled = false;
-                selesaiBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-            } else {
-                selesaiBtn.disabled = true;
-                selesaiBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            }
-        }
-
-        // Selesaikan pengembalian
-        function selesaikanPengembalian() {
-            const catatan = document.getElementById('catatanPemeriksaan').value;
-            const totalPenalty = document.getElementById('totalPenalty').textContent;
-            
-            if (confirm('Apakah Anda yakin semua proses pengembalian telah selesai dengan benar?')) {
-                // Show loading state
-                const btn = document.getElementById('selesaiBtn');
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i>Memproses...';
-                btn.disabled = true;
-                
-                setTimeout(() => {
-                    alert(`Pengembalian iPhone berhasil diselesaikan!\n\nPenyewa: John Doe\niPhone: iPhone 15 Pro Max 256GB\nIMEI: 123456789012345\nTanggal Kembali: ${new Date().toLocaleDateString('id-ID')}\nTotal Denda: ${totalPenalty}\n\nKTP telah dikembalikan kepada penyewa.\nStatus rental: SELESAI\nStatus iPhone: TERSEDIA`);
-                    
-                    // In real implementation:
-                    // - Update database status
-                    // - Return iPhone to available inventory
-                    // - Send completion notification to customer
-                    // - Generate return receipt
-                    
-                    window.location.href = 'dashboard-admin.html';
-                }, 1500);
-            }
-        }
-
-        // Batalkan proses
-        function batalkanProses() {
-            if (confirm('Apakah Anda yakin ingin membatalkan proses pengembalian ini?')) {
-                alert('Proses pengembalian dibatalkan.\nStatus rental tetap "Aktif".');
-                window.location.href = 'dashboard-admin.html';
-            }
-        }
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add event listeners to condition selects
-            const conditionSelects = document.querySelectorAll('.condition-select');
-            conditionSelects.forEach(select => {
-                select.addEventListener('change', calculatePenalty);
-            });
-            
-            // Add event listeners to checkboxes
-            const checkboxes = ['dendaBayar', 'ktpKembali', 'konfirmasiSelesai'];
-            checkboxes.forEach(id => {
-                document.getElementById(id).addEventListener('change', checkAllRequirements);
-            });
-            
-            // Initial calculation
-            calculatePenalty();
-            
-            console.log('Proses pengembalian page loaded');
         });
- </script>
+    });
+});
+</script>
 @endpush
-
-

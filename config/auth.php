@@ -36,9 +36,9 @@ return [
     */
 
     'guards' => [
-        'web' => [
+        'penyewa' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'penyewas',
         ],
     ],
 
@@ -60,9 +60,9 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'penyewas' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\Penyewa::class,
         ],
 
         // 'users' => [

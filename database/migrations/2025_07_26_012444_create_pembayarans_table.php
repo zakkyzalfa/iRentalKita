@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('total_bayar');
             $table->string('metode_bayar', 20);
             $table->string('bukti_bayar', 255)->nullable();
+            // $table->string('status', 20)->nullable()->after('bukti_bayar');
             $table->timestamps();
         
             $table->foreign('id_pemesanan')->references('id_pemesanan')->on('pemesanans')->onDelete('cascade');
